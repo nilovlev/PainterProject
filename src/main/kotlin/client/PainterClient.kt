@@ -6,9 +6,10 @@ import java.nio.charset.Charset
 import java.util.*
 import kotlin.concurrent.thread
 
-class PainterClient(address: String, port: Int) {
+class PainterClient(address: String, port: Int, val view: PainterView) {
 
     private val connection: Socket = Socket(address, port)
+    private val messageHandler: MessageHandler = MessageHandler()
     private var connected: Boolean = true
 
     private val reader: Scanner = Scanner(connection.getInputStream())
@@ -30,13 +31,19 @@ class PainterClient(address: String, port: Int) {
         }
     }
 
+    fun writeList(list: ArrayList<ArrayList<Double>>) {
+        writer.write((list.toString() + '\n').toByteArray(Charset.defaultCharset()))
+    }
+
     private fun write(message: String) {
         writer.write((message + '\n').toByteArray(Charset.defaultCharset()))
     }
 
     private fun read() {
         while (connected) {
-            println(reader.nextLine())
+            val message = reader.nextLine()
+            val result = messageHandler.handle(message)
+            view.draw(result)
         }
     }
 

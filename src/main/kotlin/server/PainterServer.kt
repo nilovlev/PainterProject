@@ -7,6 +7,8 @@ import java.nio.charset.Charset
 import java.util.*
 import kotlin.concurrent.thread
 
+private var connections: ArrayList<ClientHandler> = ArrayList()
+
 fun main() {
     val server = ServerSocket(9999)
     println("Server is running on port ${server.localPort}")
@@ -15,7 +17,11 @@ fun main() {
         val client = server.accept()
         println("Client connected: ${client.inetAddress.hostAddress}")
 
-        thread { ClientHandler(client).run() }
+        thread {
+            val cl = ClientHandler(client)
+            connections.add(cl)
+            cl.run()
+        }
     }
 }
 
@@ -29,29 +35,31 @@ class ClientHandler(client: Socket) {
     fun run() {
         running = true
 
-        write("Hello, I'm server")
+//        write("Hello, I'm server")
 
         while (running) {
             try {
                 val text = reader.nextLine()
-                if (text == "EXIT"){
-                    shutdown()
-                }
+                if (text == "EXIT") shutdown()
+
                 val result = messageHandler.handle(text)
-                write(result)
+                for (cl in connections) {
+                    if (cl != this) cl.write(result)
+                }
             } catch (e: Exception) {
                 shutdown()
             }
         }
     }
 
-    private fun write(message: String) {
+    fun write(message: String) {
         writer.write((message + '\n').toByteArray(Charset.defaultCharset()))
     }
 
     private fun shutdown() {
         running = false
         client.close()
+        connections.remove(this)
         println("${client.inetAddress.hostAddress} closed the connection")
     }
 

@@ -25,8 +25,8 @@ fun main() {
     }
 }
 
-class ClientHandler(client: Socket) {
-    private val client: Socket = client
+class ClientHandler(private val client: Socket) {
+
     private val reader: Scanner = Scanner(client.getInputStream())
     private val writer: OutputStream = client.getOutputStream()
     private val messageHandler: MessageHandler = MessageHandler()
@@ -34,8 +34,6 @@ class ClientHandler(client: Socket) {
 
     fun run() {
         running = true
-
-//        write("Hello, I'm server")
 
         while (running) {
             try {

@@ -3,18 +3,18 @@ package client
 import javafx.fxml.FXML
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
-import javafx.scene.layout.AnchorPane
+import javafx.scene.layout.BorderPane
 import javafx.scene.paint.Color
 import tornadofx.*
 
 class PainterView: View() {
 
-    override val root: AnchorPane by fxml("/Painter/Painter.fxml")
+    override val root: BorderPane by fxml("/Painter/Painter.fxml")
 
     @FXML
     lateinit var mainCanvas: Canvas
 
-    val packageSize = 10
+    private val packageSize = 10
 
     fun initialize() {
         val address = "localhost"

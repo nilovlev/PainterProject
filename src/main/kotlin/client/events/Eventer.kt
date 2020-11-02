@@ -8,10 +8,13 @@ inline fun<reified Type: Event> register(noinline func: (event: Type) -> Unit) {
     }
     listenersList.add(prefire)
 }
+
 fun emit(event: Event) {
     for (func in listenersList) {
         func(event)
     }
 }
+
 var listenersList = mutableListOf<(Event) -> Unit>()
-open class Event {}
+
+open class Event

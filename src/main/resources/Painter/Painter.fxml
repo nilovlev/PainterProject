@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.layout.BorderPane?>
-
 
 <BorderPane prefHeight="400.0" prefWidth="569.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <Canvas fx:id="mainCanvas" height="400.0" width="569.0" BorderPane.alignment="CENTER" />
    </center>
+   <top>
+      <ColorPicker fx:id="colorPicker" prefHeight="25.0" prefWidth="38.0" BorderPane.alignment="CENTER_RIGHT" />
+   </top>
 </BorderPane>

@@ -1,5 +1,7 @@
-package client
+package client.network
 
+import client.events.emit
+import client.events.LineEvent
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -9,10 +11,10 @@ import java.nio.charset.Charset
 import java.util.*
 import kotlin.concurrent.thread
 
-class PainterClient(address: String, port: Int, val view: PainterView) {
+class PainterClient(address: String, port: Int) {
 
     private val connection: Socket = Socket(address, port)
-    private val messageHandler: MessageHandler = MessageHandler()
+//    private val messageHandler: MessageHandler = MessageHandler()
     private var connected: Boolean = true
 
     private val reader: Scanner = Scanner(connection.getInputStream())
@@ -34,8 +36,8 @@ class PainterClient(address: String, port: Int, val view: PainterView) {
         }
     }
 
-    fun writeList(list: ArrayList<ArrayList<Double>>) {
-        writer.write((Json.encodeToString(Line(list)) + '\n').toByteArray(Charset.defaultCharset()))
+    fun writeLine(line: Line) {
+        writer.write((Json.encodeToString(line) + '\n').toByteArray(Charset.defaultCharset()))
     }
 
     private fun write(message: String) {
@@ -45,7 +47,7 @@ class PainterClient(address: String, port: Int, val view: PainterView) {
     private fun read() {
         while (connected) {
             val message = reader.nextLine()
-            view.draw(Json.decodeFromString<Line>(message).list)
+            emit(LineEvent(Json.decodeFromString(message)))
         }
     }
 
